@@ -64,56 +64,111 @@ We are now at the last part of step by step guide on how to simulate STM32 proje
 ![image](https://user-images.githubusercontent.com/36288975/233856847-32bea88a-565f-4e01-9c7e-4f7ed546ddf6.png)
 
 14. Double click on the the MCU part to open settings. Next to the Program File option, give full path to the Hex file generated using STM32Cube IDE. Then set the external crystal frequency to 8M (i.e. 8 MHz). Click OK to save the changes.
-![image](https://user-images.githubusercontent.com/36288975/234186668-f21e74f6-8958-4eb2-899f-8e53770a5c06.png)
+![Screenshot 2023-04-25 at 11-30-32 26 png (PNG Image 519 × 411 pixels)](https://user-images.githubusercontent.com/118343461/234187506-1fb19c28-dbba-4d98-ba4d-d23f7cebacdd.png)
+
+
+
 15. click on debug and simulate using simulation as shown below 
 
 ![image](https://user-images.githubusercontent.com/36288975/233856904-99eb708a-c907-4595-9025-c9dbd89b8879.png)
 
 
 ## STM 32 CUBE PROGRAM :
-~~~
-NAME:PAVAN MUDI
-REG.NO:212221230067
-~~~
-~~~
+```
 #include "main.h"
+
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+
 int main(void)
 {
-  HAL_Init();
-  SystemClock_Config();
-  MX_GPIO_Init();
-  while (1)
+
+HAL_Init();
+SystemClock_Config();
+MX_GPIO_Init();
+
+while (1)
   {
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 	  HAL_Delay(500);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
 	  HAL_Delay(500);
   }
- }
-~~~
+  
+}
 
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+  
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+}
+
+void Error_Handler(void)
+{
+   __disable_irq();
+  while (1)
+  {
+  }
+  }
+
+}
+
+#ifdef  USE_FULL_ASSERT
+
+void assert_failed(uint8_t *file, uint32_t line)
+{
+
+}
+#endif
+
+created by:Mudi.pavan
+reg no : 212221230067
+```
 ## Output screen shots of proteus  :
-### BUTTON OFF LED OFF CONDITION:
-
-![pm 31](https://user-images.githubusercontent.com/94619247/234247754-4073f0a8-e08a-453c-85e9-48d5f7a147f9.jpg)
-
-### BUTTON ON LED ON CONDITION:
-
-![pm 32](https://user-images.githubusercontent.com/94619247/234249541-4d3785f4-38dd-455b-a371-dc52be1da54e.jpg)
+![Screenshot 2023-04-25 at 11-17-01 Yuvaranithulasingam_EXPERIMENT--03-SIMULATION-OF-PUSHBUTTON-AND-LED-WITH-PROTEUS-](https://user-images.githubusercontent.com/118343461/234186576-d8c10a74-8fb4-4d8d-b4e0-d18f5edd38e9.png)
 
 
-## Proteus layout(Add pdf screen shot of circuit here)
- 
- ![pm 33](https://user-images.githubusercontent.com/94619247/234249613-31eae982-9891-49b6-99b9-abf3807b89ee.jpg)
+![Screenshot 2023-04-25 at 11-22-55 Yuvaranithulasingam_EXPERIMENT--03-SIMULATION-OF-PUSHBUTTON-AND-LED-WITH-PROTEUS-](https://user-images.githubusercontent.com/118343461/234186601-ab8cb523-7bfe-491c-bc26-cbb578be3572.png)
 
- 
- 
- 
- 
- 
 ## Result :
 Interfacing a digital output and digital input  with ARM microcontroller are simulated in proteus and the results are verified.
-
-
